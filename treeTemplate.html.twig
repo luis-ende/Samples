@@ -1,0 +1,85 @@
+                height: 25px;
+                border: 0px;
+                margin-left: 15px;
+                margin-top: 200px;
+            }
+        </style>
+
+        <script type="text/javascript">
+            {% set json_data = type_attributes_tree.getTreeDataAsJson %}
+            var treeControl, treeDataProcessor;
+
+            function loadTreeData() {
+                var jsonData = $.parseJSON('{{ json_data|raw }}');
+                treeControl.loadJSONObject(jsonData);
+            }
+
+            function setAttributesSelection(inputElementId) {
+                var inputSelection = document.getElementById(inputElementId);
+                var treeSelection = treeControl.getAllChecked().split(",").map(Number);
+                var nodeIds = [];
+                var itemIndex = 0;
+                for (index = 0; index < treeSelection.length; index++) {
+                    if (!treeControl.hasChildren(treeSelection[index])) {
+                        nodeIds[itemIndex] = treeControl.getUserData(treeSelection[index], "id");
+                        itemIndex += 1;
+                    }
+                }
+
+                inputSelection.setAttribute("value", JSON.stringify(nodeIds));
+            }
+
+            window.onload = function() {
+                treeControl = new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
+                treeControl.setImagePath("{{ asset('images/dhxtree_skyblue/') }}");
+                treeControl.enableItemEditor(false);
+                treeControl.enableDragAndDrop(false);
+                treeControl.enableTextSigns(true);
+                treeControl.enableCheckBoxes(true);
+                treeControl.enableThreeStateCheckboxes(true);
+//                      treeControl.enableMultiselection(true, false);
+                {#treeControl.enableKeyboardNavigation(true);#}
+                {#treeControl.enableKeySearch(true);#}
+                {#treeControl.setSerializationLevel(userData); //not available in this version of the library#}
+                loadTreeData();
+                treeControl.openAllItems(0);
+                treeDataProcessor = new dataProcessor("{{ path('type_attributes_tree_post') }}");
+                treeDataProcessor.attachEvent("onAfterUpdate",function(nodeId,cType,newID) {
+                    {#alert(cType);#}
+                    {#treeDataProcessor.setUpdated(nodeId, cType, false);#}
+                });
+                {#treeDataProcessor.setUpdateMode("POST", true);#}
+                {#treeDataProcessor.setUpdateMode("off");#}
+                treeDataProcessor.init(treeControl);
+            }
+        </script>
+    {% endif %}
+
+    <div class="tab-content">
+        <div id="tab1" class="tab-pane active"> {{ parent() }} </div>
+        {% if (show_attributes_detail == true) %}
+            <div id="tab2" class="tab-pane">
+                <div class="mainDiv">
+                    <div class="sidebox1">
+                        <form id="dhxtree_form" method="post" action="#" onsubmit="setAttributesSelection('attributeTypes')">
+                            <input id = "attributeTypes" type="hidden" name="attributes_selection" value="">
+                            <strong>Available Type Attributes</strong>
+                            <div class="dhxtree_dhx_skyblue" id="treeboxbox_tree" enableItemEditor="true" style="border: 0px solid Silver; overflow: hidden;"></div>
+                        </form>
+                    </div>
+                    <div class="centerbox">
+                        <div class="arrowbox">
+                            <button form="dhxtree_form" type="submit" class="btn btn-default">
+                                <img src="{{ asset('bundles/looopcorecommons/images/arrow_r.gif') }}">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="sidebox2">
+                        <strong>View Attributes</strong>
+                        {{ grid(view_attributes_grid, view_attributes_template) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
