@@ -1,3 +1,60 @@
+{% extends 'LooopCoreFrameworkBundle:_form:form_' ~ form_template_type|default('tabs')~ '_template.html.twig' %}
+
+{% block head_script %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    <ul class="nav nav-tabs form-horizontal">
+        <li class="active">
+            <a href="#tab1" data-toggle="tab">View Definition</a>
+        </li>
+        {% if (show_attributes_detail == true) %}
+        <li>
+            <a href="#tab2" data-toggle="tab">Attribute Definitions</a>
+        </li>
+        {% endif %}
+    </ul>
+    <br>
+
+    {% if (show_attributes_detail == true) %}
+        {# me-todo css code only for testing purposes here #}
+        <style type="text/css">
+            .mainDiv {
+                width: 80%;
+                height: 200px;
+                margin: 0 auto;
+            }
+            .sidebox1 {
+                float: left;
+                width: 30%;
+                height: 500px;
+                border: 1px solid silver;
+                margin-left: 10px;
+                padding: 5px;
+            }
+
+            .sidebox2 {
+                float: left;
+                width: 50%;
+                height: 500px;
+                border: 1px solid silver;
+                margin-left: 10px;
+                padding: 5px;
+            }
+
+            .centerbox {
+                float: left;
+                width: 5%;
+                height: 500px;
+                border: 0px;
+                margin-left: 10px;
+            }
+
+            .arrowbox {
+                float: left;
+                width: 25px;
                 height: 25px;
                 border: 0px;
                 margin-left: 15px;
