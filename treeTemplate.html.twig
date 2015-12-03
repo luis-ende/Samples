@@ -5,117 +5,142 @@
 {% endblock %}
 
 {% block body %}
-
-    <ul class="nav nav-tabs form-horizontal">
+    <ul class="nav nav-tabs form-horizontal" id="myTab">
         <li class="active">
-            <a href="#tab1" data-toggle="tab">View Definition</a>
+            <a href="#tab_view_def" data-toggle="tab">View Definition</a>
         </li>
         {% if (show_attributes_detail == true) %}
         <li>
-            <a href="#tab2" data-toggle="tab">Attribute Definitions</a>
+            <a href="#tab_attr_def" data-toggle="tab">Attribute Definitions</a>
         </li>
         {% endif %}
     </ul>
     <br>
 
-    {% if (show_attributes_detail == true) %}
-        {# me-todo css code only for testing purposes here #}
-        <style type="text/css">
-            .mainDiv {
-                width: 80%;
-                height: 200px;
-                margin: 0 auto;
-            }
-            .sidebox1 {
-                float: left;
-                width: 30%;
-                height: 500px;
-                border: 1px solid silver;
-                margin-left: 10px;
-                padding: 5px;
-            }
+    <input type="hidden" name="active_tab" value="active_tab" form="dhxtree_form">
+    <input type="hidden" name="active_tab1" value="active_tab1" form="{{ view_attributes_grid.hash }}">
 
-            .sidebox2 {
-                float: left;
-                width: 50%;
-                height: 500px;
-                border: 1px solid silver;
-                margin-left: 10px;
-                padding: 5px;
+    {#<script type="text/javascript">#}
+        {#$('.nav-tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {#}
+            {#var url2 = e.target.hash.split('#')[1];#}
+            {#window.location = window.location + '/' + e.target.hash.substr(1);#}
+            {#return false;#}
+        {#});#}
+    {#</script>#}
+
+    {#onclick="showTab('info', this.href); this.blur(); return false;"#}
+    <script>
+        function showTab(name, url) {
+            jQuery('div#content .tab-content').hide();
+            jQuery('div.tabs a').removeClass('selected');
+            jQuery('#tab-content-' + name).show();
+            jQuery('#tab-' + name).addClass('selected');
+            //replaces current URL with the "href" attribute of the current link
+            //(only triggered if supported by browser)
+            if ("replaceState" in window.history) {
+                window.history.replaceState(null, document.title, url);
             }
-
-            .centerbox {
-                float: left;
-                width: 5%;
-                height: 500px;
-                border: 0px;
-                margin-left: 10px;
-            }
-
-            .arrowbox {
-                float: left;
-                width: 25px;
-                height: 25px;
-                border: 0px;
-                margin-left: 15px;
-                margin-top: 200px;
-            }
-        </style>
-
-        <script type="text/javascript">
-            {% set json_data = type_attributes_tree.getTreeDataAsJson %}
-            var treeControl, treeDataProcessor;
-
-            function loadTreeData() {
-                var jsonData = $.parseJSON('{{ json_data|raw }}');
-                treeControl.loadJSONObject(jsonData);
-            }
-
-            function setAttributesSelection(inputElementId) {
-                var inputSelection = document.getElementById(inputElementId);
-                var treeSelection = treeControl.getAllChecked().split(",").map(Number);
-                var nodeIds = [];
-                var itemIndex = 0;
-                for (index = 0; index < treeSelection.length; index++) {
-                    if (!treeControl.hasChildren(treeSelection[index])) {
-                        nodeIds[itemIndex] = treeControl.getUserData(treeSelection[index], "id");
-                        itemIndex += 1;
-                    }
-                }
-
-                inputSelection.setAttribute("value", JSON.stringify(nodeIds));
-            }
-
-            window.onload = function() {
-                treeControl = new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
-                treeControl.setImagePath("{{ asset('images/dhxtree_skyblue/') }}");
-                treeControl.enableItemEditor(false);
-                treeControl.enableDragAndDrop(false);
-                treeControl.enableTextSigns(true);
-                treeControl.enableCheckBoxes(true);
-                treeControl.enableThreeStateCheckboxes(true);
-//                      treeControl.enableMultiselection(true, false);
-                {#treeControl.enableKeyboardNavigation(true);#}
-                {#treeControl.enableKeySearch(true);#}
-                {#treeControl.setSerializationLevel(userData); //not available in this version of the library#}
-                loadTreeData();
-                treeControl.openAllItems(0);
-                treeDataProcessor = new dataProcessor("{{ path('type_attributes_tree_post') }}");
-                treeDataProcessor.attachEvent("onAfterUpdate",function(nodeId,cType,newID) {
-                    {#alert(cType);#}
-                    {#treeDataProcessor.setUpdated(nodeId, cType, false);#}
-                });
-                {#treeDataProcessor.setUpdateMode("POST", true);#}
-                {#treeDataProcessor.setUpdateMode("off");#}
-                treeDataProcessor.init(treeControl);
-            }
-        </script>
-    {% endif %}
+            return false;
+        }
+    </script>
 
     <div class="tab-content">
-        <div id="tab1" class="tab-pane active"> {{ parent() }} </div>
+        <div id="tab_view_def" class="tab-pane active">
+            {{ block('form_tab_widget') }}
+        </div>
         {% if (show_attributes_detail == true) %}
-            <div id="tab2" class="tab-pane">
+            {# me-todo css code only for testing purposes here #}
+            <style type="text/css">
+                .mainDiv {
+                    width: 80%;
+                    height: 200px;
+                    margin: 0 auto;
+                }
+                .sidebox1 {
+                    float: left;
+                    width: 30%;
+                    height: 500px;
+                    border: 1px solid silver;
+                    margin-left: 10px;
+                    padding: 5px;
+                }
+
+                .sidebox2 {
+                    float: left;
+                    width: 50%;
+                    height: 500px;
+                    border: 1px solid silver;
+                    margin-left: 10px;
+                    padding: 5px;
+                }
+
+                .centerbox {
+                    float: left;
+                    width: 5%;
+                    height: 500px;
+                    border: 0px;
+                    margin-left: 10px;
+                }
+
+                .arrowbox {
+                    float: left;
+                    width: 25px;
+                    height: 25px;
+                    border: 0px;
+                    margin-left: 10px;
+                    margin-top: 200px;
+                }
+            </style>
+
+            <script type="text/javascript">
+                {% set json_data = type_attributes_tree.getTreeDataAsJson %}
+                var treeControl, treeDataProcessor;
+
+                function loadTreeData() {
+                    var jsonData = $.parseJSON('{{ json_data|raw }}');
+                    treeControl.loadJSONObject(jsonData);
+                }
+
+                function setAttributesSelection(inputElementId) {
+                    var inputSelection = document.getElementById(inputElementId);
+                    var treeSelection = treeControl.getAllChecked().split(",").map(Number);
+                    var nodeIds = [];
+                    var itemIndex = 0;
+                    for (index = 0; index < treeSelection.length; index++) {
+                        if (!treeControl.hasChildren(treeSelection[index])) {
+                            nodeIds[itemIndex] = treeControl.getUserData(treeSelection[index], "id");
+                            itemIndex += 1;
+                        }
+                    }
+
+                    inputSelection.setAttribute("value", JSON.stringify(nodeIds));
+                }
+
+                window.onload = function() {
+                    treeControl = new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
+                    treeControl.setImagePath("{{ asset('images/dhxtree_skyblue/') }}");
+                    treeControl.enableItemEditor(false);
+                    treeControl.enableDragAndDrop(false);
+                    treeControl.enableTextSigns(true);
+                    treeControl.enableCheckBoxes(true);
+                    treeControl.enableThreeStateCheckboxes(true);
+//                      treeControl.enableMultiselection(true, false);
+                    {#treeControl.enableKeyboardNavigation(true);#}
+                    {#treeControl.enableKeySearch(true);#}
+                    {#treeControl.setSerializationLevel(userData); //not available in this version of the library#}
+                    loadTreeData();
+                    treeControl.openAllItems(0);
+                    treeDataProcessor = new dataProcessor("{{ path('type_attributes_tree_post') }}");
+                    treeDataProcessor.attachEvent("onAfterUpdate",function(nodeId,cType,newID) {
+                        {#alert(cType);#}
+                        {#treeDataProcessor.setUpdated(nodeId, cType, false);#}
+                    });
+                    {#treeDataProcessor.setUpdateMode("POST", true);#}
+                    {#treeDataProcessor.setUpdateMode("off");#}
+                    treeDataProcessor.init(treeControl);
+                }
+            </script>
+            <div id="tab_attr_def" class="tab-pane">
                 <div class="mainDiv">
                     <div class="sidebox1">
                         <form id="dhxtree_form" method="post" action="#" onsubmit="setAttributesSelection('attributeTypes')">
