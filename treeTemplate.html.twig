@@ -17,31 +17,26 @@
     </ul>
     <br>
 
-    <input type="hidden" name="active_tab" value="active_tab" form="dhxtree_form">
-    <input type="hidden" name="active_tab1" value="active_tab1" form="{{ view_attributes_grid.hash }}">
-
-    {#<script type="text/javascript">#}
-        {#$('.nav-tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {#}
-            {#var url2 = e.target.hash.split('#')[1];#}
-            {#window.location = window.location + '/' + e.target.hash.substr(1);#}
-            {#return false;#}
-        {#});#}
-    {#</script>#}
-
-    {#onclick="showTab('info', this.href); this.blur(); return false;"#}
-    <script>
-        function showTab(name, url) {
-            jQuery('div#content .tab-content').hide();
-            jQuery('div.tabs a').removeClass('selected');
-            jQuery('#tab-content-' + name).show();
-            jQuery('#tab-' + name).addClass('selected');
-            //replaces current URL with the "href" attribute of the current link
-            //(only triggered if supported by browser)
-            if ("replaceState" in window.history) {
-                window.history.replaceState(null, document.title, url);
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var activeTab = localStorage.getItem('tab');
+            if (activeTab) {
+                activateTab(activeTab);
             }
+        });
+
+        function activateTab(tab){
+            $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        };
+    </script>
+
+    <script type="text/javascript">
+        $('.nav-tabs a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+//            window.location.hash = e.target.hash.substr(1);
+            localStorage.setItem("tab", e.target.hash.substr(1));
+
             return false;
-        }
+        });
     </script>
 
     <div class="tab-content">
@@ -143,7 +138,7 @@
             <div id="tab_attr_def" class="tab-pane">
                 <div class="mainDiv">
                     <div class="sidebox1">
-                        <form id="dhxtree_form" method="post" action="#" onsubmit="setAttributesSelection('attributeTypes')">
+                        <form id="dhxtree_form" method="post" onsubmit="setAttributesSelection('attributeTypes')">
                             <input id = "attributeTypes" type="hidden" name="attributes_selection" value="">
                             <strong>Available Type Attributes</strong>
                             <div class="dhxtree_dhx_skyblue" id="treeboxbox_tree" enableItemEditor="true" style="border: 0px solid Silver; overflow: hidden;"></div>
