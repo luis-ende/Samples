@@ -43,7 +43,8 @@ class ListController extends BaseAction {
         // These checking should be invoked by a special method of initialization of a View (for example prepareView())
         // If a redirect response object is returned by these method, then such object should be returned
         
-        // Create a new ComposedViewBuilder class to handle composed builders. The class should maintain 
+        // Create a new ComposedViewBuilder class (or interface and trait to avoid adding a new element to the inheritance chain) 
+        // to handle composed builders. The class should maintain 
         // the list of views to be mantained and notified when a response object is needed. However, every ViewBuilder should have a 
         // method to return its own response object instead of letting the controller to create a response.
         
