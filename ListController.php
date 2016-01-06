@@ -46,7 +46,7 @@ class ListController extends BaseAction {
         // Create a new ComposedViewBuilder class (or interface and trait to avoid adding a new element to the inheritance chain) 
         // to handle composed builders. The class should maintain 
         // the list of views to be mantained and notified when a response object is needed. However, every ViewBuilder should have a 
-        // method to return its own response object instead of letting the controller to create a response.
+        // method to return its own response object instead of letting the controller to create a default response.
         
         // Consider also for the new view type an option to group the subordinated views in tabs
         
